@@ -7,10 +7,8 @@ using System.Collections;
 public class PieceEditor  : Editor  {
 
 	public override void OnInspectorGUI() {
-
-
 		foreach(var t in targets)
-			InspectPipe(GamePiece)t);
+			InspectPipe((GamePiece)t);
 
 	}
 
