@@ -6,7 +6,7 @@ public class MouseControl : MonoBehaviour {
 	GameBoard m_board;
 	GamePiece m_dragPiece;
 	DropBin m_bin;
-	PieceSpawner m_spawner;
+	PieceSpawner[] m_spawners;
 	bool m_mouseDown;
 	Vector3 m_startDrag;
 
@@ -14,7 +14,7 @@ public class MouseControl : MonoBehaviour {
 	void Start () {
 		m_board = FindObjectOfType<GameBoard> ();
 		m_bin = FindObjectOfType<DropBin> ();
-		m_spawner = FindObjectOfType<PieceSpawner> ();
+		m_spawners = FindObjectsOfType<PieceSpawner> ();
 	}
 	
 	// Update is called once per frame
@@ -54,13 +54,20 @@ public class MouseControl : MonoBehaviour {
 
 				m_startDrag = wp;
 			}
-			else if(m_spawner.m_box.OverlapPoint(wp)) {
-				m_board.Select(-1,-1);
+			else 
+			{
+				foreach ( PieceSpawner spanwer in m_spawners ) 
+				{
+					if ( spanwer.m_box.OverlapPoint(wp) ) 
+					{
+						m_board.Select(-1,-1);
 
-				m_startDrag = wp;
-				m_dragPiece = m_spawner.m_currPiece;
-				m_dragPiece.transform.parent = null;
-				m_spawner.m_currPiece = null;
+						m_startDrag = wp;
+						m_dragPiece = spanwer.m_currPiece;
+						m_dragPiece.transform.parent = null;
+						spanwer.m_currPiece = null;
+					}
+				}
 			}
 		}
 
