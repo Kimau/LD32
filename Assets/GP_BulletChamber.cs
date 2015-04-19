@@ -12,10 +12,9 @@ public class GP_BulletChamber : GamePiece {
 	public override void Start () {
 		base.Start ();
 
-		// HACK :: 
 		for (int i=0; i<4; ++i)
 			d.m_pipe [i] = 0;
-		m_shootDir = Mathf.FloorToInt (Random.value * 4.0f);
+		m_shootDir = 1;
 		d.m_pipe [m_shootDir] = 1;
 	}
 

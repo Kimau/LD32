@@ -448,4 +448,9 @@ public class GameBoard : MonoBehaviour {
 
 		return null;
 	}
+
+	public void OnTriggerEvent()
+	{
+
+	}
 }
