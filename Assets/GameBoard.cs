@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameBoard : MonoBehaviour {
 
@@ -7,8 +8,11 @@ public class GameBoard : MonoBehaviour {
 	public GameObject m_backboard;
 	public int m_width;
 	public int m_height;
+	public GamePiece m_HACKHORRIDSHOOTER;
+	public List<Ball> m_ballsOnBoard;
 	GamePiece[] m_board;
 	GamePiece m_sel;
+	float m_timeSinceTick = 0.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +20,12 @@ public class GameBoard : MonoBehaviour {
 
 		for (int x=0; x < m_width; ++x) {
 			for (int y=0; y < m_height; ++y) {
-				if(Random.value > 0.6) {
+
+				// HACK :: Insert one shooter
+				if((x + y) == 0) {
+					Place(m_HACKHORRIDSHOOTER,x,y);
+				}
+				else if(Random.value > 0.6) {
 					GamePiece p = Instantiate (m_basePiece).GetComponent<GamePiece> ();
 					if(Place(p,x,y) == false)
 						Debug.LogError("Fuck piece didn't place");
@@ -39,7 +48,75 @@ public class GameBoard : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		m_timeSinceTick += Time.deltaTime;
+
+		while (m_timeSinceTick > 1.0f) {
+			m_timeSinceTick -= 1.0f;
+			for (int i = 0; i < m_board.Length; i++) {
+				if(m_board[i])
+					m_board[i].GameTick();
+			}
+			TickBalls ();
+		}
+	}
+
+	public void EventBallSpawn(Ball b) {
+		m_ballsOnBoard.Add (b);
+		Debug.Log ("Ball Added");
+	}
+
+	static Vector3[] DIR;	// BECAUSE I HATE MYSELF DAMNIT - Claire
+
+	public void TickBalls() {
+		if(DIR == null)
+			DIR = new Vector3[]{
+			new Vector3(0.0f, 0.1f, 0.0f),
+			new Vector3(0.1f, 0.0f, 0.0f),
+			new Vector3(0.0f,-0.1f, 0.0f),
+			new Vector3(-0.1f, 0.0f, 0.0f)};
+
+		Stack<int> destroyBall = new Stack<int> ();
+		for (int i=0; i<m_ballsOnBoard.Count; ++i) {
+			Ball b = m_ballsOnBoard[i];
+			if(DoBall(b) == false) {
+				Destroy(b.gameObject);
+				Debug.Log("Destroy Ball");
+				destroyBall.Push(i);
+			}
+		}
+
+		while (destroyBall.Count > 0)
+			m_ballsOnBoard.RemoveAt (destroyBall.Pop ());
+	}
+
+	public bool DoBall(Ball b) {
+		Vector3 bp = transform.InverseTransformPoint(b.transform.position);
+		int bx = Mathf.FloorToInt(bp.x+0.5f);
+		int by = Mathf.FloorToInt(bp.y+0.5f);
+
+		if (OnBoard (bx, by) == false)
+			return false;
+		
+		if (m_board [bx + by * m_width] == null)
+			return false;
+		
+		GamePiece p = m_board[bx+by*m_width];
+		p.AffectBall(b);
+		
+		bp.x = bp.x - (bx*1.0f);
+		bp.y = bp.y - (by*1.0f);
+		
+		if((bp.y > 0.0f) && (p.m_pipe [0] == 0))
+			return false;
+		if((bp.x > 0.0f) && (p.m_pipe [1] == 0))
+			return false;
+		if((bp.y < 0.0f) && (p.m_pipe [2] == 0))
+			return false;
+		if((bp.x < 0.0f) && (p.m_pipe [3] == 0))
+			return false;
+			
+		b.transform.position += DIR[b.m_travelDir];
+		return true;
 	}
 
 	public bool OnBoard(int x, int y) {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GamePiece : MonoBehaviour {
 
@@ -12,18 +13,22 @@ public class GamePiece : MonoBehaviour {
 	Animator m_anim;
 
 	// Use this for initialization
-	void Start () {
+	public virtual void Start () {
 		m_anim = GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
 		m_anim.SetBool ("selected", m_selected==1);
 		m_anim.SetInteger ("rot", r);
 		m_anim.SetInteger ("presentrot", currentRot);
 	}
 
+	public virtual void GameTick() {
+	}
+
+	public virtual void AffectBall(Ball b) {
+	}
 	
 	public void Rotate(int rot) {
 		// Stupid Check
