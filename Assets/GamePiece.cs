@@ -16,6 +16,13 @@ public class GPData : System.Object {
 public class GamePiece : MonoBehaviour {
 
 	public GPData d; 
+
+	
+	public int x,y,r;
+	
+	public int[] m_pipe = {0,0,0,0};
+	public int[] m_wire = {0,0,0,0, // north, east, south, west
+		0,0,0,0}; // corners: north-east, south-east, south-west, north-west
 	
 	public int currentRot;
 	public int m_selected;
