@@ -428,4 +428,16 @@ public class GameBoard : MonoBehaviour {
 			m_electronPositions[ x + y * m_width ] = electron;
 		}
 	}
+
+	public GamePieceData GetElectron( int x, int y )
+	{
+		if ( OnBoard( x, y ) )
+		{
+			return m_electronPositions[ x + y * m_width ];
+		}
+
+		Debug.LogError( "GetElectron (" + x.ToString() + "," + y.ToString() + ") is out of bounds." );
+
+		return null;
+	}
 }
