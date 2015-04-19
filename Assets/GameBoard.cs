@@ -401,6 +401,11 @@ public class GameBoard : MonoBehaviour {
 		GamePiece p = m_sel;
 		m_sel = null;
 
+		if ( p.GetType() == typeof(GP_Handle) )
+		{
+			m_handlesOnBoard.Remove( p as GP_Handle );
+		}
+
 		p.m_selected = 0;
 		p.transform.parent = null;
 		p.name = "Piece_Float";
@@ -442,7 +447,10 @@ public class GameBoard : MonoBehaviour {
 		}
 		m_board[x + y * m_width] = p;
 
-		m_handlesOnBoard.Add( p as GP_Handle );
+		if ( p.GetType() == typeof(GP_Handle) )
+		{
+			m_handlesOnBoard.Add( p as GP_Handle );
+		}
 
 		return true;
 	}
@@ -516,13 +524,72 @@ public class GameBoard : MonoBehaviour {
 		return null;
 	}
 
+	bool EvaluateForFloorFill( Vector2 pos, bool[] floodFill )
+	{
+		if ( OnBoard( (int)pos.x, (int)pos.y ) == false )
+			return false;
+
+		if ( floodFill[ (int)pos.x + (int)pos.y * m_width ] )
+			return false;
+
+		if ( m_board[ (int)pos.x + (int)pos.y * m_width ] == null )
+			return false;
+
+		floodFill[ (int)pos.x + (int)pos.y * m_width ] = true;
+		return true;
+
+	}
+
 	public void OnTriggerEvent()
 	{
+		// Flood fill to find anything that touches the handle so it isn't destroyed
+		bool[] floodFill = new bool[ m_width * m_height ];
+		List< Vector2 > positions = new List<Vector2>();
+		foreach ( GP_Handle handle in m_handlesOnBoard )
+		{
+			floodFill[ handle.d.x + handle.d.y * m_width ] = true;
+			positions.Add( new Vector2( handle.d.x, handle.d.y ) );
+		}
+
+		while ( positions.Count > 0 )
+		{
+			Vector2 pos = positions[0];
+			positions.RemoveAt(0);
+
+			Vector2 neighbourPos0 = new Vector2( pos.x, pos.y + 1.0f );
+			if ( EvaluateForFloorFill( neighbourPos0, floodFill ) )
+			{
+				positions.Add( neighbourPos0 );
+			}
+
+			Vector2 neighbourPos1 = new Vector2( pos.x, pos.y - 1.0f );
+			if ( EvaluateForFloorFill( neighbourPos1, floodFill ) )
+			{
+				positions.Add( neighbourPos1 );
+			}
+
+			Vector2 neighbourPos2 = new Vector2( pos.x + 1.0f, pos.y );
+			if ( EvaluateForFloorFill( neighbourPos2, floodFill ) )
+			{
+				positions.Add( neighbourPos2 );
+			}
+
+			Vector2 neighbourPos3 = new Vector2( pos.x - 1.0f, pos.y );
+			if ( EvaluateForFloorFill( neighbourPos3, floodFill ) )
+			{
+				positions.Add( neighbourPos3 );
+			}
+		}
+
 		for ( int x = 0; x < m_width; ++x )
 		{
 			for ( int y = 0; y < m_height; ++y )
 			{
-
+				if ( floodFill[ x + y * m_width ] == false && m_board[ x + y * m_width ] != null )
+				{
+					Destroy( m_board[ x + y * m_width ].gameObject );
+					m_board[ x + y * m_width ] = null;
+				}
 			}
 		}
 	}

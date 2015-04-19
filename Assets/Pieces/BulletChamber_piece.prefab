@@ -180,6 +180,9 @@ MonoBehaviour:
     r: 0
     m_pipe: 00000000010000000000000000000000
     m_wire: 0000000001000000010000000000000000000000000000000000000000000000
+  m_FriendlyName: Bullet Chamber
+  m_FriendlyDesc: When it gets a spark, it will fire a bullet. Must be loaded first.
+  m_isFixed: 0
   currentRot: 0
   m_selected: 0
   m_shootDir: 1

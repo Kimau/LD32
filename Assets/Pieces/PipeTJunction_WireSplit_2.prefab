@@ -238,8 +238,8 @@ MonoBehaviour:
     r: 0
     m_pipe: 00000000010000000100000001000000
     m_wire: 0000000000000000000000000000000000000000010000000000000001000000
-  m_FriendlyName: Balls
-  m_FriendlyDesc: Game ticks this object until it...
+  m_FriendlyName: Pipe and wires
+  m_FriendlyDesc: Use these to move sparks and bullets.
   m_isFixed: 0
   currentRot: 0
   m_selected: 0

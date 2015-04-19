@@ -180,6 +180,9 @@ MonoBehaviour:
     r: 0
     m_pipe: 01000000010000000100000001000000
     m_wire: 0000000000000000000000000000000000000000000000000000000000000000
+  m_FriendlyName: Pipe
+  m_FriendlyDesc: Use these to move bullets.
+  m_isFixed: 0
   currentRot: 0
   m_selected: 0
 --- !u!212 &21230098

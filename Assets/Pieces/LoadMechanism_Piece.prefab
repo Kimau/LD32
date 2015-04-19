@@ -325,6 +325,10 @@ MonoBehaviour:
     r: 0
     m_pipe: 00000000000000000000000000000000
     m_wire: 0000000001000000000000000100000000000000000000000000000000000000
+  m_FriendlyName: Loading Mechanism
+  m_FriendlyDesc: 'When it gets a spark, it will load the Bullet Chamber ''wirelessly''
+    via cogs. '
+  m_isFixed: 0
   currentRot: 0
   m_selected: 0
 --- !u!212 &21202740
