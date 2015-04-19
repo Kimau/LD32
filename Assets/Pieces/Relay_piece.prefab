@@ -12,7 +12,7 @@ GameObject:
   - 95: {fileID: 9594422}
   - 114: {fileID: 11433882}
   m_Layer: 0
-  m_Name: Trigger_piece
+  m_Name: Relay_piece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,7 +55,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 180124}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b3544baa07d246598439fa0e11c18dc, type: 3}
+  m_Script: {fileID: 11500000, guid: fa11ad04cc7b74cc4a8306dc80a1ce34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   d:
@@ -63,7 +63,7 @@ MonoBehaviour:
     y: 0
     r: 0
     m_pipe: 00000000000000000000000000000000
-    m_wire: 0100000001000000010000000100000001000000010000000100000001000000
+    m_wire: 0100000001000000000000000100000000000000000000000000000000000000
   x: 0
   y: 0
   r: 0
@@ -71,6 +71,8 @@ MonoBehaviour:
   m_wire: 0000000000000000000000000000000000000000000000000000000000000000
   currentRot: 0
   m_selected: 0
+  m_RelayControlElectronPosition: 0
+  m_RelayActive: 1
 --- !u!212 &21272108
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -95,7 +97,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3b3a3d84499138246a42abbc6f285fcc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 84702d3983242eb488a8c1cc99aacc34, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
