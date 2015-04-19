@@ -12,19 +12,18 @@ public class GameBoard : MonoBehaviour {
 	public List<Ball> m_ballsOnBoard;
 	GamePiece[] m_board;
 	GamePiece m_sel;
+	GamePieceData[] m_electronPositions;
 	float m_timeSinceTick = 0.0f;
-	Vector4[] m_electronPositions;
 
 	// Use this for initialization
 	void Start () {
 		m_board = new GamePiece[m_width*m_height];
-		m_electronPositions = new Vector4[ m_width * m_height ];
+		m_electronPositions = new GamePieceData[ m_width * m_height ];
 		for ( int i = 0; i < (m_width*m_height); ++i )
 		{
-			m_electronPositions[i] = new Vector4();
+			m_electronPositions[i] = new GamePieceData();
 		}
 
-		int firstTile = 0;
 		for (int x=0; x < m_width; ++x) {
 			for (int y=0; y < m_height; ++y) {
 
@@ -36,12 +35,6 @@ public class GameBoard : MonoBehaviour {
 					GamePiece p = Instantiate (m_basePiece).GetComponent<GamePiece> ();
 					if(Place(p,x,y) == false)
 						Debug.LogError("Fuck piece didn't place");
-
-					if (firstTile == 0 )
-					{
-						firstTile = 1;
-						m_electronPositions[ x + y * m_width ] = new Vector4( 1.0f, 1.0f, 1.0f, 1.0f );
-					}
 
 					// HACK :: Random Stuff
 					for(int i=0; i<4; ++i)
@@ -207,7 +200,7 @@ public class GameBoard : MonoBehaviour {
 			
 			//if ( otherPiece.m_wire[ inverseJ ] != 0 || false ) // no need for this check because of confirming own's line existence
 			{
-				m_electronPositions[ (int)otherPiecePos.x + (int)otherPiecePos.y * m_width ][inverseDir] = 1.0f;
+				m_electronPositions[ (int)otherPiecePos.x + (int)otherPiecePos.y * m_width ][inverseDir] = 1;
 			}
 		}
 	}
@@ -215,11 +208,11 @@ public class GameBoard : MonoBehaviour {
 	void TickElec() {
 
 
-		Vector4[] electronPositionsCopy = m_electronPositions.Clone() as Vector4[];
+		GamePieceData[] electronPositionsCopy = m_electronPositions.Clone() as GamePieceData[];
 
 		for ( int i = 0; i < (m_width*m_height); ++i )
 		{
-			m_electronPositions[i] = Vector4.zero;
+			m_electronPositions[i] = GamePieceData.zero;
 		}
 
 		Vector2 piecePos = new Vector2();
@@ -231,12 +224,12 @@ public class GameBoard : MonoBehaviour {
 				piecePos.y = y;
 
 				GamePiece piece = m_board[ x + y * m_width ];
-				Vector4 electron = electronPositionsCopy[ x + y * m_width ];
+				GamePieceData electron = electronPositionsCopy[ x + y * m_width ];
 
 				// Simple directions (non-diagonals)
-				for ( int i = 0; i < 4; ++i )
+				for ( int i = 0; i < 5; ++i )
 				{
-					if ( electron[i] == 1.0f && piece.m_wire[ i ] != 0 )
+					if ( electron[i] != 0 && ( i == 4 || piece.m_wire[ i ] != 0 ) )
 					{
 						for ( int j = 0; j < 4; ++j )
 						{
@@ -270,7 +263,7 @@ public class GameBoard : MonoBehaviour {
 				for ( int i = 0; i < 4; ++i )
 				{
 					// if electron at position
-					if ( electron[i] != 0.0f )
+					if ( electron[i] != 0 )
 					{
 						// For each possible diagonal
 						for ( int j = 0; j < 2; ++j )
@@ -280,13 +273,24 @@ public class GameBoard : MonoBehaviour {
 							if ( piece.m_wire[ wireTest + 4 ] != 0 )
 							{
 								// There is a wire! Hurray. Now to get the output direction...
-								int outputDirection = (int)kWireToDirections[wireTest][0];
-								if ( outputDirection == i )
+								if ( electron[4] != 0 )
 								{
-									outputDirection = (int)kWireToDirections[wireTest][1];
+									// If center electron is set, output to both directions
+									outputToDirection( piecePos, (int)kWireToDirections[wireTest][0] );
+									outputToDirection( piecePos, (int)kWireToDirections[wireTest][1] );
 								}
 
-								outputToDirection( piecePos, outputDirection );
+								else
+								{
+									// Output to one direction only
+									int outputDirection = (int)kWireToDirections[wireTest][0];
+									if ( outputDirection == i )
+									{
+										outputDirection = (int)kWireToDirections[wireTest][1];
+									}
+
+									outputToDirection( piecePos, outputDirection );
+								}
 							}
 						}
 					}
