@@ -10,8 +10,10 @@ public class GP_Diode : GamePiece {
 		GameBoard gameBoard = GetGameBoard();
 		if ( gameBoard != null )
 		{
+			Debug.Log( "Diode" );
 			int transformedElectronEntry = ( currentRot / 90 + m_allowedElectronEntry ) % 4;
 			GamePieceData electron = gameBoard.GetElectron( d.x, d.y );
+			Debug.Log( transformedElectronEntry.ToString() );
 			for ( int i = 0; i < 5; ++i )
 			{
 				// Remove all unallowed electrons! :)
@@ -19,6 +21,8 @@ public class GP_Diode : GamePiece {
 				{
 					electron[ i ] = 0;
 				}
+
+				gameBoard.SetElectron( d.x, d.y, electron );
 			}
 		}
 	}

@@ -6,6 +6,7 @@ public class GP_BulletChamber : GamePiece {
 	public Ball m_ballPrefab;
 	public int m_ticksBetweenShots = 5;
 	int m_ticksSinceSpawn = 0;
+	bool m_loaded = false;
 
 	// Use this for initialization
 	public override void Start () {
@@ -26,12 +27,17 @@ public class GP_BulletChamber : GamePiece {
 	public void OnLoadMechanism()
 	{
 		Debug.Log( "Load mechanism activated" );
+		m_loaded = true;
+	}
 
-		if(m_ticksSinceSpawn >= m_ticksBetweenShots)
+	public void OnElectricTrigger()
+	{
+		Debug.Log( "Gun triggered." );
+		if ( m_loaded )
 		{
-			m_ticksSinceSpawn = 0;
-
-			Debug.Log( "Ignition!" );
+			Debug.Log( "Fire!" );
+			m_loaded = false;
+		
 			Ball b = Instantiate(m_ballPrefab).GetComponent<Ball>();
 			b.transform.position = transform.position;
 			b.m_travelDir = m_shootDir;
