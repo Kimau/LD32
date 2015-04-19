@@ -317,6 +317,22 @@ public class GameBoard : MonoBehaviour {
 
 			}
 		}
+
+		for ( int i = 0; i < (m_width*m_height); ++i )
+		{
+			if ( m_board[i] != null )
+			{
+				GamePieceData elec = m_electronPositions[i];
+				for ( int j = 0; j < 4; ++j )
+				{
+					if ( elec[j] != 0 )
+					{
+						m_board[ i ].SendMessage( "OnElectricTrigger" );
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	public bool OnBoard(int x, int y) {
