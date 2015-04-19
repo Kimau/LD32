@@ -8,7 +8,8 @@ public class GamePiece : MonoBehaviour {
 	public int currentRot;
 	public int m_selected;
 	public int[] m_pipe = {0,0,0,0};
-	public int[] m_wire = {0,0,0,0,0,0,0,0};
+	public int[] m_wire = {0,0,0,0, // north, east, south, west
+		0,0,0,0}; // corners: north-east, south-east, south-west, north-west
 
 	Animator m_anim;
 
@@ -72,5 +73,13 @@ public class GamePiece : MonoBehaviour {
 				Gizmos.DrawSphere (transform.position + Quaternion.AngleAxis (55.0f - 90.0f * i, Vector3.forward) * Vector3.up * 0.4f, 0.05f);
 			Gizmos.DrawSphere (transform.position + Quaternion.AngleAxis (40.0f - 90.0f * i, Vector3.forward) * Vector3.up * 0.4f, 0.05f);
 			}
+
+		Gizmos.color = Color.magenta;
+		
+		if(m_pipe[0]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
+		if(m_pipe[1]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
+		if(m_pipe[2]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,-0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
+		if(m_pipe[3]!=0) Gizmos.DrawCube (transform.position + new Vector3(-0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
 	}
+
 }
