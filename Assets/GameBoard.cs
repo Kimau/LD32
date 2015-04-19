@@ -32,7 +32,18 @@ public class GameBoard : MonoBehaviour {
 					Place(m_HACKHORRIDSHOOTER,x,y);
 				}
 				else if(Random.value > 0.6) {
-					GamePiece p = Instantiate (m_basePiece).GetComponent<GamePiece> ();
+					GamePiece p = Instantiate (m_basePiece) as GamePiece;
+					GameObject pieceObject = p.gameObject;
+
+
+					if ( Random.value > 0.9 ) {
+						Debug.Log( "Trigger created" );
+
+						Destroy( p );
+						p = pieceObject.AddComponent<GP_Trigger>() as GP_Trigger;
+
+					}
+
 					if(Place(p,x,y) == false)
 						Debug.LogError("Fuck piece didn't place");
 
@@ -226,6 +237,14 @@ public class GameBoard : MonoBehaviour {
 				GamePiece piece = m_board[ x + y * m_width ];
 				GamePieceData electron = electronPositionsCopy[ x + y * m_width ];
 
+				if ( piece == null )
+				{
+					for ( int i = 0; i < 5; ++i )
+						electron[ i ] = 0;
+
+					continue;
+				}
+
 				// Simple directions (non-diagonals)
 				for ( int i = 0; i < 5; ++i )
 				{
@@ -361,25 +380,38 @@ public class GameBoard : MonoBehaviour {
 
 			for ( int i = 0; i < (m_width*m_height); ++i )
 			{
-				for ( int j = 0; j < 4; ++j )
+				if ( m_board[i] != null )
 				{
-					if ( m_electronPositions[i][j] != 0.0f )
+					for ( int j = 0; j < 5; ++j )
 					{
-						float kOffsetSize = 0.25f;
-						Vector3[] offsets =
+						if ( m_electronPositions[i][j] != 0 )
 						{
-							new Vector3( 0.0f, kOffsetSize, 0.0f ),
-							new Vector3( kOffsetSize, 0.0f, 0.0f ),
+							float kOffsetSize = 0.25f;
+							Vector3[] offsets =
+							{
+								new Vector3( 0.0f, kOffsetSize, 0.0f ),
+								new Vector3( kOffsetSize, 0.0f, 0.0f ),
 
-							new Vector3( 0.0f, -kOffsetSize, 0.0f ),
-							new Vector3( -kOffsetSize, 0.0f, 0.0f )
+								new Vector3( 0.0f, -kOffsetSize, 0.0f ),
+								new Vector3( -kOffsetSize, 0.0f, 0.0f ),
 
-						};
-						Gizmos.DrawSphere( m_board[i].transform.position + offsets[j], 0.1f );
+								Vector3.zero
+
+							};
+							Gizmos.DrawSphere( m_board[i].transform.position + offsets[j], 0.1f );
+						}
 					}
 				}
 			}
 
+		}
+	}
+
+	public void SetElectron( int x, int y, GamePieceData electron )
+	{
+		if ( OnBoard( x, y ) )
+		{
+			m_electronPositions[ x + y * m_width ] = electron;
 		}
 	}
 }

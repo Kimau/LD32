@@ -25,6 +25,18 @@ public class GamePiece : MonoBehaviour {
 		m_anim.SetInteger ("presentrot", currentRot);
 	}
 
+	public void OnDestroy()
+	{
+		if ( transform.parent != null )
+		{
+			GameBoard gameBoard = transform.parent.gameObject.GetComponent<GameBoard>() as GameBoard;
+			if ( gameBoard != null )
+			{
+				gameBoard.SetElectron( x, y, GamePieceData.zero );
+			}
+		}
+	}
+
 	public virtual void GameTick() {
 	}
 

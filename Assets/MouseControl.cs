@@ -78,7 +78,13 @@ public class MouseControl : MonoBehaviour {
 				m_dragPiece.Rotate (90);
 			else 
 				m_board.RotateSelectedPiece (90);
+		
 		}
+
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			m_board.BroadcastMessage( "OnTriggerEvent" );
+		}
+
 		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
 			if (m_dragPiece)
 				m_dragPiece.Rotate (-90);

@@ -23,13 +23,13 @@ public class GamePieceData {
 
 	public int North
 	{
-		set { this._data[4] = value; }
+		set { this._data[0] = value; }
 		get { return this._data[0]; }
 	}
 
 	public int East
 	{
-		set { this._data[4] = value; }
+		set { this._data[1] = value; }
 		get { return this._data[1]; }
 	}
 
