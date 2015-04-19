@@ -36,6 +36,7 @@ Shader "LD/ColourKey"
 				{
 					float4 vertex : SV_POSITION;
 					half2 texcoord : TEXCOORD0;
+					float4 worldSpacePosition : TEXCOORD1;
 				};
 
 				float4 _MainTex_ST;
@@ -49,18 +50,23 @@ Shader "LD/ColourKey"
 					v2f o;
 					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 					o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
+					o.worldSpacePosition = mul(_Object2World, v.vertex);
 					return o;
 				}
 				
 				fixed4 frag (v2f i) : SV_Target
 				{
+					float u = frac(i.worldSpacePosition.x / 0.64f * 1.0f);
+					float v = frac(i.worldSpacePosition.y / 0.64f * 1.0f);
+					
 					fixed4 mainCol = tex2D(_MainTex, i.texcoord);
-					fixed4 bgCol = tex2D(_BgTex, i.texcoord);
-					fixed4 foreCol = tex2D(_ForegroundTex, i.texcoord);
+					fixed4 bgCol = tex2D(_BgTex, float2(u, v));
+					fixed4 foreCol = tex2D(_ForegroundTex, float2(u, v));
 					
 					if (mainCol.r >= 0.98f && mainCol.g <= 0.01f && mainCol.b <= 0.01f)
 					{
 						return bgCol;
+					//	return fixed4(i.worldSpacePosition.x, 0.0f, 0.0f, 1.0f);
 					}
 					else if (mainCol.r >= 0.98f && mainCol.g <= 0.01f && mainCol.b >= 0.98f)
 					{

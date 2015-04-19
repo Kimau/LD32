@@ -39,14 +39,14 @@ Material:
         first:
           name: _BgTex
         second:
-          m_Texture: {fileID: 2800000, guid: 87d3d51b6efef3f46aaba43fd5423443, type: 3}
+          m_Texture: {fileID: 2800000, guid: 4ead22d2f19df2d45b5177a68e0b5e51, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _ForegroundTex
         second:
-          m_Texture: {fileID: 2800000, guid: 15aff048ebd6e7d4bb211f6ac40c4c30, type: 3}
+          m_Texture: {fileID: 2800000, guid: 57b37a05be440b744af0b026ad13ea35, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:

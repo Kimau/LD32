@@ -71,8 +71,8 @@ public class GamePiece : MonoBehaviour {
 		int[] nWire = new int[8];
 		for (int i=0; i<4; ++i) {
 			nPipe[i] = d.m_pipe[(i+4+step)%4];
-			nWire[i] = d.m_wire[(i+8+step)%8];
-			nWire[i+4] = d.m_wire[(i+8+step)%8+4];
+			nWire[i] = d.m_wire[(i+4+step)%4];
+			nWire[i+4] = d.m_wire[(i+4+step)%4+4];
 		}
 		d.m_pipe = nPipe;
 		d.m_wire = nWire;
