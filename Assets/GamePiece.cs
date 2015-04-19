@@ -94,4 +94,14 @@ public class GamePiece : MonoBehaviour {
 		if(m_pipe[3]!=0) Gizmos.DrawCube (transform.position + new Vector3(-0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
 	}
 
+	public GameBoard GetGameBoard()
+	{
+		if ( transform.parent != null )
+		{
+			return transform.parent.gameObject.GetComponent<GameBoard>() as GameBoard;
+		}
+
+		return null;
+	}
+
 }
