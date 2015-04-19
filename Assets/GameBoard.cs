@@ -8,7 +8,6 @@ public class GameBoard : MonoBehaviour {
 	public GameObject m_backboard;
 	public int m_width;
 	public int m_height;
-	public GamePiece m_HACKHORRIDSHOOTER;
 	public List<Ball> m_ballsOnBoard;
 	GamePiece[] m_board;
 	GamePiece m_sel;
@@ -22,38 +21,6 @@ public class GameBoard : MonoBehaviour {
 		for ( int i = 0; i < (m_width*m_height); ++i )
 		{
 			m_electronPositions[i] = new GamePieceData();
-		}
-
-		for (int x=0; x < m_width; ++x) {
-			for (int y=0; y < m_height; ++y) {
-
-				// HACK :: Insert one shooter
-				if((x + y) == 0) {
-					Place(m_HACKHORRIDSHOOTER,x,y);
-				}
-				else if(Random.value > 0.6) {
-					GamePiece p = Instantiate (m_basePiece) as GamePiece;
-					GameObject pieceObject = p.gameObject;
-
-
-					if ( Random.value > 0.9 ) {
-						Debug.Log( "Trigger created" );
-
-						Destroy( p );
-						p = pieceObject.AddComponent<GP_Trigger>() as GP_Trigger;
-
-					}
-
-					if(Place(p,x,y) == false)
-						Debug.LogError("Fuck piece didn't place");
-
-					// HACK :: Random Stuff
-					for(int i=0; i<4; ++i)
-						p.m_pipe[i] = (Random.value > 0.3)?1:0;
-					for(int i=0; i<8; ++i)
-						p.m_wire[i] = (Random.value > 0.3)?1:0;
-				}
-			}
 		}
 
 		m_backboard.transform.parent = transform;
@@ -351,6 +318,7 @@ public class GameBoard : MonoBehaviour {
 		GamePiece p = m_sel;
 		m_sel = null;
 
+		p.m_selected = 0;
 		p.transform.parent = null;
 		p.name = "Piece_Float";
 		return p;
