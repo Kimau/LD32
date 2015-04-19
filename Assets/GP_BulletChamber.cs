@@ -30,7 +30,8 @@ public class GP_BulletChamber : GamePiece {
 		if(m_ticksSinceSpawn >= m_ticksBetweenShots)
 		{
 			m_ticksSinceSpawn = 0;
-			
+
+			Debug.Log( "Ignition!" );
 			Ball b = Instantiate(m_ballPrefab).GetComponent<Ball>();
 			b.transform.position = transform.position;
 			b.m_travelDir = m_shootDir;

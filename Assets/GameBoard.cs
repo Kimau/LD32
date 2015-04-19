@@ -13,6 +13,7 @@ public class GameBoard : MonoBehaviour {
 	GamePiece m_sel;
 	GamePieceData[] m_electronPositions;
 	float m_timeSinceTick = 0.0f;
+	float m_electronTickTime = 0.0f;
 
 	public bool IsPieceSelected() {
 		return (m_sel != null);
@@ -36,11 +37,16 @@ public class GameBoard : MonoBehaviour {
 
 	void Update () {
 		m_timeSinceTick += Time.deltaTime;
+		m_electronTickTime += Time.deltaTime;
 
-		while (m_timeSinceTick > 1.0f) {
-			m_timeSinceTick -= 1.0f;
-
+		while ( m_electronTickTime > 1.0f )
+		{
+			m_electronTickTime -= 1.0f;
 			TickElec();
+		}
+
+		while (m_timeSinceTick > 0.1f) {
+			m_timeSinceTick -= 0.1f;
 
 			for (int i = 0; i < m_board.Length; i++) {
 				if(m_board[i])
@@ -49,6 +55,8 @@ public class GameBoard : MonoBehaviour {
 
 			TickBalls ();
 		}
+
+
 
 	}
 
@@ -134,7 +142,7 @@ public class GameBoard : MonoBehaviour {
 
 		GamePiece np;
 		if (IsBallOnPipe (bp, bx, by, out np)) { // Continue On
-			b.transform.position += DIR [b.m_travelDir];
+			b.transform.position += DIR [b.m_travelDir] * b.m_speed;
 		}
 		else {
 			if (p != np)
