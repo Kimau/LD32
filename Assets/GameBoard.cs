@@ -187,115 +187,141 @@ public class GameBoard : MonoBehaviour {
 		}
 	}
 
-	void TickElec() {
+	// Update electron movements on non diagonal tiles
+	void UpdateElecSimple( Vector2 piecePos, GamePiece piece, GamePieceData electron )
+	{
+		for ( int i = 0; i < 5; ++i )
+		{
+			// if electron and wire exist in position, or center electron and any wire (center is an exception)
+			if ( electron[i] != 0 && ( i == 4 || piece.m_wire[ i ] != 0 ) )
+			{
+				for ( int j = 0; j < 4; ++j )
+				{
+					// make sure electron isn't going backwards
+					if ( i != j && piece.m_wire[ j ] != 0 )
+					{
+						// output to new tile
+						outputToDirection( piecePos, j );
+					}
+				}
+			}
+		}
+	}
 
+	void UpdateElecDiagonal( Vector2 piecePos, GamePiece piece, GamePieceData electron )
+	{
+		//
+		// Diagonal checks helper tables
+		//
 
+		Vector2[] kDirectionToPossibleWires =
+		{
+			// corners: north-east, south-east, south-west, north-west
+			new Vector2( 0.0f, 3.0f ),
+			new Vector2( 0.0f, 1.0f ),
+			new Vector2( 1.0f, 2.0f ),
+			new Vector2( 2.0f, 3.0f )
+		};
+
+		Vector2[] kWireToDirections =
+		{
+			// corners: north-east, south-east, south-west, north-west
+			new Vector2( 0.0f, 1.0f ),
+			new Vector2( 1.0f, 2.0f ),
+			new Vector2( 2.0f, 3.0f ),
+			new Vector2( 3.0f, 0.0f )
+		};
+		
+		for ( int i = 0; i < 4; ++i )
+		{
+			// If electron is at position
+			if ( electron[i] != 0 )
+			{
+				// For each possible diagonal
+				for ( int j = 0; j < 2; ++j )
+				{
+					// if diagonal exists
+					int wireTest = (int)kDirectionToPossibleWires[i][j];
+					if ( piece.m_wire[ wireTest + 4 ] != 0 )
+					{
+						// There is a wire! Hurray. Now to get the output direction...
+						if ( electron[4] != 0 )
+						{
+							// If center electron is set, output to both directions
+							outputToDirection( piecePos, (int)kWireToDirections[wireTest][0] );
+							outputToDirection( piecePos, (int)kWireToDirections[wireTest][1] );
+						}
+						
+						else
+						{
+							// Output to one direction only
+							int outputDirection = (int)kWireToDirections[wireTest][0];
+							if ( outputDirection == i )
+							{
+								outputDirection = (int)kWireToDirections[wireTest][1];
+							}
+							
+							outputToDirection( piecePos, outputDirection );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Update electrons logic (movement and event trigger to tiles for activation)
+	void TickElec()
+	{
+		// Copy the data to avoid working on an updated tile
 		GamePieceData[] electronPositionsCopy = m_electronPositions.Clone() as GamePieceData[];
 
+		// Zero the main data
 		for ( int i = 0; i < (m_width*m_height); ++i )
 		{
 			m_electronPositions[i] = GamePieceData.zero;
 		}
 
+		// Pos variable
 		Vector2 piecePos = new Vector2();
 		for ( int x = 0; x < m_width; ++x )
 		{
 			for ( int y = 0; y < m_height; ++y )
 			{
+				// Set the pos variable
 				piecePos.x = x;
 				piecePos.y = y;
 
+				// Get the piece and electron
 				GamePiece piece = m_board[ x + y * m_width ];
 				GamePieceData electron = electronPositionsCopy[ x + y * m_width ];
 
+				// Safety check piece actually exists
 				if ( piece == null )
 				{
+					// No piece, reset electron
 					for ( int i = 0; i < 5; ++i )
 						electron[ i ] = 0;
 
 					continue;
 				}
 
-				// Simple directions (non-diagonals)
-				for ( int i = 0; i < 5; ++i )
-				{
-					if ( electron[i] != 0 && ( i == 4 || piece.m_wire[ i ] != 0 ) )
-					{
-						for ( int j = 0; j < 4; ++j )
-						{
-							if ( i != j && piece.m_wire[ j ] != 0 )
-							{
-								outputToDirection( piecePos, j );
-							}
-						}
-					}
-				}
+				// Process Simple directions (non-diagonals)
+				UpdateElecSimple( piecePos, piece, electron );
 
-				// Diagonal checks
-				Vector2[] kDirectionToPossibleWires =
-				{
-					// corners: north-east, south-east, south-west, north-west
-					new Vector2( 0.0f, 3.0f ),
-					new Vector2( 0.0f, 1.0f ),
-					new Vector2( 1.0f, 2.0f ),
-					new Vector2( 2.0f, 3.0f )
-				};
-
-				Vector2[] kWireToDirections =
-				{
-					// corners: north-east, south-east, south-west, north-west
-					new Vector2( 0.0f, 1.0f ),
-					new Vector2( 1.0f, 2.0f ),
-					new Vector2( 2.0f, 3.0f ),
-					new Vector2( 3.0f, 0.0f )
-				};
-
-				for ( int i = 0; i < 4; ++i )
-				{
-					// if electron at position
-					if ( electron[i] != 0 )
-					{
-						// For each possible diagonal
-						for ( int j = 0; j < 2; ++j )
-						{
-							// if diagonal exists
-							int wireTest = (int)kDirectionToPossibleWires[i][j];
-							if ( piece.m_wire[ wireTest + 4 ] != 0 )
-							{
-								// There is a wire! Hurray. Now to get the output direction...
-								if ( electron[4] != 0 )
-								{
-									// If center electron is set, output to both directions
-									outputToDirection( piecePos, (int)kWireToDirections[wireTest][0] );
-									outputToDirection( piecePos, (int)kWireToDirections[wireTest][1] );
-								}
-
-								else
-								{
-									// Output to one direction only
-									int outputDirection = (int)kWireToDirections[wireTest][0];
-									if ( outputDirection == i )
-									{
-										outputDirection = (int)kWireToDirections[wireTest][1];
-									}
-
-									outputToDirection( piecePos, outputDirection );
-								}
-							}
-						}
-					}
-				}
-
+				// Process Diagonal directions
+				UpdateElecDiagonal( piecePos, piece, electron );
 			}
 		}
 
+		// Trigger all game pieces with new electrons on them
 		for ( int i = 0; i < (m_width*m_height); ++i )
 		{
-			if ( m_board[i] != null )
+			if ( m_board[i] != null ) // safety
 			{
 				GamePieceData elec = m_electronPositions[i];
 				for ( int j = 0; j < 4; ++j )
 				{
+					// if any electron at all, send trigger once
 					if ( elec[j] != 0 )
 					{
 						m_board[ i ].SendMessage( "OnElectricTrigger" );
