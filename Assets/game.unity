@@ -168,7 +168,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1.765625, y: 1.5625}
---- !u!4 &687295162
+--- !u!4 &687295162 stripped
 Transform:
   m_PrefabParentObject: {fileID: 427982, guid: 1be8064333be0964db67016d075cd148, type: 2}
   m_PrefabInternal: {fileID: 722149530}
@@ -708,11 +708,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21eb084b8a11dff479c5108250795428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_basePiece: {fileID: 11442914, guid: 1be8064333be0964db67016d075cd148, type: 2}
-  m_backboard: {fileID: 1118825568}
   m_width: 8
   m_height: 8
   m_ballsOnBoard: []
+  m_handlesOnBoard: []
 --- !u!4 &1394212578
 Transform:
   m_ObjectHideFlags: 0

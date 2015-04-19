@@ -5,7 +5,9 @@ public class MouseControl : MonoBehaviour {
 
 	GameBoard m_board;
 	GamePiece m_dragPiece;
+	Vector3 m_draggPieceoffset = Vector3.zero;
 	DropBin m_bin;
+	Tooltip m_tip;
 	PieceSpawner[] m_spawners;
 	bool m_mouseDown;
 	Vector3 m_startDrag;
@@ -15,6 +17,23 @@ public class MouseControl : MonoBehaviour {
 		m_board = FindObjectOfType<GameBoard> ();
 		m_bin = FindObjectOfType<DropBin> ();
 		m_spawners = FindObjectsOfType<PieceSpawner> ();
+		m_tip = FindObjectOfType<Tooltip> ();
+
+		SetTooltip (null);
+	}
+
+	void SetTooltip(GamePiece p) {
+		if (m_tip == null)
+			return;
+
+		if (p == null) {
+			m_tip.gameObject.SetActive(false);
+			return;
+		}
+
+		m_tip.gameObject.SetActive(true);
+		m_tip.m_FriendlyNameText.text = p.m_FriendlyName;
+		m_tip.m_FriendlyDescText.text = p.m_FriendlyDesc;
 	}
 	
 	// Update is called once per frame
@@ -34,11 +53,25 @@ public class MouseControl : MonoBehaviour {
 		if(m_mouseDown) {
 			if((m_dragPiece == null) && (m_startDrag - wp).sqrMagnitude > 0.1f) {
 				m_dragPiece = m_board.Pickup();	
+
+				if ( m_dragPiece )
+				{
+					SpriteRenderer spriteRenderer = m_dragPiece.gameObject.GetComponent<SpriteRenderer>();
+					if ( spriteRenderer )
+					{
+						Vector3 bounds = spriteRenderer.bounds.size;
+						m_draggPieceoffset.x = (bounds.x - 1.0f) * 0.5f;
+						m_draggPieceoffset.y = (bounds.y - 1.0f) * 0.5f;
+					}
+				}
 			}
 		}
 
-		if(m_dragPiece)
-			m_dragPiece.transform.position = wp;
+		if (m_dragPiece) {
+		{
+			m_dragPiece.transform.position = wp + m_draggPieceoffset;
+		}
+		}
 
 		// Mouse Buttons
 		if (Input.GetMouseButtonDown (0)) {
@@ -66,6 +99,14 @@ public class MouseControl : MonoBehaviour {
 						m_dragPiece = spanwer.m_currPiece;
 						m_dragPiece.transform.parent = null;
 						spanwer.m_currPiece = null;
+
+						SpriteRenderer spriteRenderer = m_dragPiece.gameObject.GetComponent<SpriteRenderer>();
+						if ( spriteRenderer )
+						{
+							Vector3 bounds = spriteRenderer.bounds.size;
+							m_draggPieceoffset.x = (bounds.x - 1.0f) * 0.5f;
+							m_draggPieceoffset.y = (bounds.y - 1.0f) * 0.5f;
+						}
 					}
 				}
 			}
@@ -110,6 +151,9 @@ public class MouseControl : MonoBehaviour {
 			else 
 				m_board.RotateSelectedPiece (-90);
 		}
+
+		// Tooltip
+		SetTooltip (m_dragPiece);
 	}
 
 	void DropDragPiece (int x,int y, Vector3 wp)

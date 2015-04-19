@@ -4,11 +4,10 @@ using System.Collections.Generic;
 
 public class GameBoard : MonoBehaviour {
 
-	public GamePiece m_basePiece;
-	public GameObject m_backboard;
 	public int m_width;
 	public int m_height;
 	public List<Ball> m_ballsOnBoard;
+	public List<GP_Handle> m_handlesOnBoard;
 	GamePiece[] m_board;
 	GamePiece m_sel;
 	GamePieceData[] m_electronPositions;
@@ -19,8 +18,24 @@ public class GameBoard : MonoBehaviour {
 		return (m_sel != null);
 	}
 
+
+	public void SnapePiecesFromTransforms() {
+		GamePiece[] pArr = GetComponentsInChildren<GamePiece>();
+		for (int i = 0; i < pArr.Length; i++) {
+			pArr[i].transform.localPosition = new Vector3(
+				Mathf.Round(pArr[i].transform.localPosition.x),
+				Mathf.Round(pArr[i].transform.localPosition.y),
+				0.0f);
+			pArr[i].d.x = Mathf.FloorToInt(pArr[i].transform.localPosition.x);
+			pArr[i].d.y = Mathf.FloorToInt(pArr[i].transform.localPosition.y);
+			pArr[i].m_isFixed = true;
+
+			Debug.Log (pArr[i].d.x + ":" + pArr[i].d.y);
+		}
+	}
+
 	// Use this for initialization
-	void Start () {
+	void Start () {	
 		m_board = new GamePiece[m_width*m_height];
 		m_electronPositions = new GamePieceData[ m_width * m_height ];
 		for ( int i = 0; i < (m_width*m_height); ++i )
@@ -28,11 +43,13 @@ public class GameBoard : MonoBehaviour {
 			m_electronPositions[i] = new GamePieceData();
 		}
 
-		m_backboard.transform.parent = transform;
-		m_backboard.transform.localScale = new Vector3 (m_width, m_height, 0.0f);
-		m_backboard.transform.localPosition = m_backboard.transform.localScale * 0.5f - new Vector3(0.5f, 0.5f, 0.0f);
-
-		transform.position = new Vector3 (m_width * -0.5f, m_height * -0.5f, 0);
+		// Get premade pieces
+		SnapePiecesFromTransforms ();
+		GamePiece[] pArr = GetComponentsInChildren<GamePiece> ();
+		for (int i = 0; i < pArr.Length; i++) {
+			if(Place(pArr[i], pArr[i].d.x, pArr[i].d.y) == false)
+				Destroy(pArr[i].gameObject); // Destroy on fail
+		}
 	}
 
 	void Update () {
@@ -357,6 +374,8 @@ public class GameBoard : MonoBehaviour {
 			return false;
 		if (m_board [x + y * m_width] == null)
 			return false;
+		if (m_board [x + y * m_width].m_isFixed)
+			return false;
 
 		m_sel = m_board [x + y * m_width];
 		m_sel.m_selected = 1;
@@ -365,8 +384,18 @@ public class GameBoard : MonoBehaviour {
 	}
 
 	public GamePiece Pickup() {
-		if (!m_sel)
+		if (!m_sel || m_sel.m_isFixed)
 			return null;
+
+		SpriteRenderer spriteRenderer = m_sel.gameObject.GetComponent<SpriteRenderer>();
+		Vector3 bounds = spriteRenderer.bounds.size;
+		for ( int i = 0; i < (int)bounds.x; ++i )
+		{
+			for ( int j = 0; j < (int)bounds.y; ++j )
+			{
+				m_board [(m_sel.d.x+i) + (m_sel.d.y+j) * m_width] = null;
+			}
+		}
 
 		m_board [m_sel.d.x + m_sel.d.y * m_width] = null;
 		GamePiece p = m_sel;
@@ -378,24 +407,62 @@ public class GameBoard : MonoBehaviour {
 		return p;
 	}
 
-	public bool Place(GamePiece p, int x, int y) {
-		if (OnBoard (x, y) == false)
-			return false;
-		if (m_board [x + y * m_width] != null) 
-			return false;
+	public bool Place(GamePiece p, int x, int y) 
+	{
+		Vector3 offset = Vector3.zero;
+		SpriteRenderer spriteRenderer = p.gameObject.GetComponent<SpriteRenderer>();
+		Vector3 bounds = spriteRenderer.bounds.size;
+		offset.x = (bounds.x - 1.0f) * 0.5f;
+		offset.y = (bounds.y - 1.0f) * 0.5f;
+		
+		for ( int i = 0; i < (int)bounds.x; ++i )
+		{
+			for ( int j = 0; j < (int)bounds.y; ++j )
+			{
+				if (OnBoard (x + i, y + j) == false)
+					return false;
+				if (m_board [(x+i) + (y+j) * m_width] != null) 
+					return false;
+			}
+		}
 
 		p.transform.parent = transform;
-		p.transform.localPosition = new Vector3(x, y, 0);
+		p.transform.localPosition = new Vector3(x + offset.x, y + offset.y, 0);
 		p.d.x = x;
 		p.d.y = y;
 		p.m_selected = 0;
 		p.name = "Piece" + x + "_" + y;
 
+		for ( int i = 0; i < (int)bounds.x; ++i )
+		{
+			for ( int j = 0; j < (int)bounds.y; ++j )
+			{
+				m_board [(x+i) + (y+j) * m_width] = p;
+			}
+		}
 		m_board[x + y * m_width] = p;
+
+		m_handlesOnBoard.Add( p as GP_Handle );
+
 		return true;
 	}
 
 	void OnDrawGizmos() {
+
+		// SHOW GRID
+		Gizmos.color = Color.white;
+		Vector3 offset = Vector3.one * -0.5f;
+		for (int x = 0; x <= m_width; ++x) {
+			Gizmos.DrawLine(transform.TransformPoint(new Vector3(x,0,-10)+offset),
+			                transform.TransformPoint(new Vector3(x,m_width,-10)+offset));
+		}
+		for (int y = 0; y <= m_height; ++y) {
+			Gizmos.DrawLine(transform.TransformPoint(new Vector3(0,y,-10)+offset),
+			                transform.TransformPoint(new Vector3(m_height,y,-10)+offset));
+		}
+
+
+		/// DEBUG ELECTRON STUFF
 		if ( m_electronPositions != null && m_electronPositions.Length != 0 )
 		{
 			Gizmos.color = Color.cyan;
@@ -451,6 +518,13 @@ public class GameBoard : MonoBehaviour {
 
 	public void OnTriggerEvent()
 	{
+		for ( int x = 0; x < m_width; ++x )
+		{
+			for ( int y = 0; y < m_height; ++y )
+			{
 
+			}
+		}
 	}
+
 }

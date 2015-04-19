@@ -16,6 +16,9 @@ public class GPData : System.Object {
 public class GamePiece : MonoBehaviour {
 
 	public GPData d; 
+	public string m_FriendlyName = "Balls";
+	public string m_FriendlyDesc = "Game ticks this object until it...";
+	public bool m_isFixed = false;
 	public int currentRot;
 	public int m_selected;
 	Animator m_anim;
@@ -56,6 +59,11 @@ public class GamePiece : MonoBehaviour {
 			Debug.LogError("90 oly");
 			return;
 		}
+
+		SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		Vector3 bounds = spriteRenderer.bounds.size;
+		if ( bounds.x > 1.0f || bounds.y > 1.0f )
+			return;
 
 		// Mooosh DATA	
 		int step = -rot / 90;
