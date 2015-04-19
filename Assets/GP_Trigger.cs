@@ -11,7 +11,7 @@ public class GP_Trigger : GamePiece {
 			GameBoard gameBoard = GetGameBoard();
 			if ( gameBoard != null )
 			{
-				gameBoard.SetElectron( x, y, new GamePieceData( 1, 1, 1, 1, 1 ) );
+				gameBoard.SetElectron( d.x, d.y, new GamePieceData( 1, 1, 1, 1, 1 ) );
 			}
 		}
 	}

@@ -87,13 +87,13 @@ public class GameBoard : MonoBehaviour {
 		if (m_board [bx + by * m_width] == null)
 			return false;
 		p = m_board [bx + by * m_width];
-		if ((bp.y > 0.0f) && (p.m_pipe [0] == 0))
+		if ((bp.y > 0.0f) && (p.d.m_pipe [0] == 0))
 			return false;
-		if ((bp.x > 0.0f) && (p.m_pipe [1] == 0))
+		if ((bp.x > 0.0f) && (p.d.m_pipe [1] == 0))
 			return false;
-		if ((bp.y < 0.0f) && (p.m_pipe [2] == 0))
+		if ((bp.y < 0.0f) && (p.d.m_pipe [2] == 0))
 			return false;
-		if ((bp.x < 0.0f) && (p.m_pipe [3] == 0))
+		if ((bp.x < 0.0f) && (p.d.m_pipe [3] == 0))
 			return false;
 		return true;
 	}
@@ -149,10 +149,10 @@ public class GameBoard : MonoBehaviour {
 
 			int left = (b.m_travelDir + 3) % 4;
 			int right = (b.m_travelDir + 5) % 4;
-			if (p.m_pipe [left] != 0) {
+			if (p.d.m_pipe [left] != 0) {
 				b.m_travelDir = left;
 				b.transform.position = np.transform.position + DIR [b.m_travelDir] * bp.magnitude;
-			} else if (p.m_pipe [right] != 0) {
+			} else if (p.d.m_pipe [right] != 0) {
 				b.m_travelDir = right;
 				b.transform.position = np.transform.position + DIR [b.m_travelDir] * bp.magnitude;
 			} else {
@@ -193,12 +193,12 @@ public class GameBoard : MonoBehaviour {
 		for ( int i = 0; i < 5; ++i )
 		{
 			// if electron and wire exist in position, or center electron and any wire (center is an exception)
-			if ( electron[i] != 0 && ( i == 4 || piece.m_wire[ i ] != 0 ) )
+			if ( electron[i] != 0 && ( i == 4 || piece.d.m_wire[ i ] != 0 ) )
 			{
 				for ( int j = 0; j < 4; ++j )
 				{
 					// make sure electron isn't going backwards
-					if ( i != j && piece.m_wire[ j ] != 0 )
+					if ( i != j && piece.d.m_wire[ j ] != 0 )
 					{
 						// output to new tile
 						outputToDirection( piecePos, j );
@@ -242,7 +242,7 @@ public class GameBoard : MonoBehaviour {
 				{
 					// if diagonal exists
 					int wireTest = (int)kDirectionToPossibleWires[i][j];
-					if ( piece.m_wire[ wireTest + 4 ] != 0 )
+					if ( piece.d.m_wire[ wireTest + 4 ] != 0 )
 					{
 						// There is a wire! Hurray. Now to get the output direction...
 						if ( electron[4] != 0 )
@@ -360,7 +360,7 @@ public class GameBoard : MonoBehaviour {
 		if (!m_sel)
 			return null;
 
-		m_board [m_sel.x + m_sel.y * m_width] = null;
+		m_board [m_sel.d.x + m_sel.d.y * m_width] = null;
 		GamePiece p = m_sel;
 		m_sel = null;
 
@@ -378,8 +378,8 @@ public class GameBoard : MonoBehaviour {
 
 		p.transform.parent = transform;
 		p.transform.localPosition = new Vector3(x, y, 0);
-		p.x = x;
-		p.y = y;
+		p.d.x = x;
+		p.d.y = y;
 		p.m_selected = 0;
 		p.name = "Piece" + x + "_" + y;
 

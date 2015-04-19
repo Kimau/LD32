@@ -13,9 +13,9 @@ public class GP_InfiniteBullet : GamePiece {
 
 		// HACK :: 
 		for (int i=0; i<4; ++i)
-			m_pipe [i] = 0;
+			d.m_pipe [i] = 0;
 		m_shootDir = Mathf.FloorToInt (Random.value * 4.0f);
-		m_pipe [m_shootDir] = 1;
+		d.m_pipe [m_shootDir] = 1;
 	}
 
 	public override void GameTick() {
