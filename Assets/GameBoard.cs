@@ -265,7 +265,8 @@ public class GameBoard : MonoBehaviour {
 		}
 	}
 
-	void TickElec() 
+	// Update electrons logic (movement and event trigger to tiles for activation)
+	void TickElec()
 	{
 		// Copy the data to avoid working on an updated tile
 		GamePieceData[] electronPositionsCopy = m_electronPositions.Clone() as GamePieceData[];
