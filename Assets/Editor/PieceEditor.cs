@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 
 [CustomPropertyDrawer(typeof(GPData))]
-public class IngredientDrawer : PropertyDrawer {
+public class PieceDrawer : PropertyDrawer {
 	
 	// Draw the property inside the given rect
 	public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label) {

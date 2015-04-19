@@ -8,7 +8,7 @@ public class MouseControl : MonoBehaviour {
 	Vector3 m_draggPieceoffset = Vector3.zero;
 	DropBin m_bin;
 	Tooltip m_tip;
-	PieceSpawner[] m_spawners;
+	SpawnerBase[] m_spawners;
 	bool m_mouseDown;
 	Vector3 m_startDrag;
 
@@ -16,7 +16,7 @@ public class MouseControl : MonoBehaviour {
 	void Start () {
 		m_board = FindObjectOfType<GameBoard> ();
 		m_bin = FindObjectOfType<DropBin> ();
-		m_spawners = FindObjectsOfType<PieceSpawner> ();
+		m_spawners = FindObjectsOfType<SpawnerBase> ();
 		m_tip = FindObjectOfType<Tooltip> ();
 
 		SetTooltip (null);
@@ -68,9 +68,7 @@ public class MouseControl : MonoBehaviour {
 		}
 
 		if (m_dragPiece) {
-		{
 			m_dragPiece.transform.position = wp + m_draggPieceoffset;
-		}
 		}
 
 		// Mouse Buttons
@@ -89,7 +87,7 @@ public class MouseControl : MonoBehaviour {
 			}
 			else 
 			{
-				foreach ( PieceSpawner spanwer in m_spawners ) 
+				foreach ( SpawnerBase spanwer in m_spawners ) 
 				{
 					if ( spanwer.m_box.OverlapPoint(wp) ) 
 					{
@@ -150,6 +148,25 @@ public class MouseControl : MonoBehaviour {
 				m_dragPiece.Rotate (-90);
 			else 
 				m_board.RotateSelectedPiece (-90);
+		}
+
+		if (Input.GetKeyUp (KeyCode.Q)) {
+			m_board.transform.localScale *= 0.5f;
+		}
+		if (Input.GetKeyUp (KeyCode.E)) {
+			m_board.transform.localScale *= 2.0f;
+		}
+		if (Input.GetKeyUp (KeyCode.W)) {
+			m_board.transform.position += new Vector3(0.0f, -m_board.transform.localScale.z, 0.0f);
+		}
+		if (Input.GetKeyDown (KeyCode.S)) {
+			m_board.transform.position += new Vector3(0.0f, +m_board.transform.localScale.z, 0.0f);
+		}
+		if (Input.GetKeyUp (KeyCode.A)) {
+			m_board.transform.position += new Vector3(-m_board.transform.localScale.z, 0.0f, 0.0f);
+		}
+		if (Input.GetKeyDown (KeyCode.D)) {
+			m_board.transform.position += new Vector3(+m_board.transform.localScale.z, 0.0f,0.0f);
 		}
 
 		// Tooltip

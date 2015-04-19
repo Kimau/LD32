@@ -62,8 +62,11 @@ public class GamePiece : MonoBehaviour {
 
 		SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		Vector3 bounds = spriteRenderer.bounds.size;
-		if ( bounds.x > 1.0f || bounds.y > 1.0f )
+		if ( bounds.x > 1.1f || bounds.y > 1.1f )
+		{
+			Debug.Log( "Rotation cancelled due to size: " + bounds.ToString() );
 			return;
+		}
 
 		// Mooosh DATA	
 		int step = -rot / 90;
@@ -87,10 +90,10 @@ public class GamePiece : MonoBehaviour {
 		if (d == null)
 			d = new GPData ();
 
-		if(d.m_pipe[0]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
-		if(d.m_pipe[1]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
-		if(d.m_pipe[2]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,-0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
-		if(d.m_pipe[3]!=0) Gizmos.DrawCube (transform.position + new Vector3(-0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
+		if(d.m_pipe[0]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,0.25f,0.0f), new Vector3(0.1f, 0.2f, 0.1f));
+		if(d.m_pipe[1]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.25f,0.0f,0.0f), new Vector3(0.2f, 0.1f, 0.1f));
+		if(d.m_pipe[2]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,-0.25f,0.0f), new Vector3(0.1f, 0.2f, 0.1f));
+		if(d.m_pipe[3]!=0) Gizmos.DrawCube (transform.position + new Vector3(-0.25f,0.0f,0.0f), new Vector3(0.2f, 0.1f, 0.1f));
 
 		Gizmos.color = Color.yellow;
 		for (int i=0; i<4; ++i)
@@ -103,13 +106,6 @@ public class GamePiece : MonoBehaviour {
 				Gizmos.DrawSphere (transform.position + Quaternion.AngleAxis (55.0f - 90.0f * i, Vector3.forward) * Vector3.up * 0.4f, 0.05f);
 			Gizmos.DrawSphere (transform.position + Quaternion.AngleAxis (40.0f - 90.0f * i, Vector3.forward) * Vector3.up * 0.4f, 0.05f);
 			}
-
-		Gizmos.color = Color.magenta;
-		
-		if(d.m_pipe[0]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
-		if(d.m_pipe[1]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
-		if(d.m_pipe[2]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,-0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
-		if(d.m_pipe[3]!=0) Gizmos.DrawCube (transform.position + new Vector3(-0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
 	}
 
 	public GameBoard GetGameBoard()

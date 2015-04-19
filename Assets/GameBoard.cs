@@ -7,7 +7,7 @@ public class GameBoard : MonoBehaviour {
 	public int m_width;
 	public int m_height;
 	public List<Ball> m_ballsOnBoard;
-	public List<GP_Handle> m_handlesOnBoard;
+
 	GamePiece[] m_board;
 	GamePiece m_sel;
 	GamePieceData[] m_electronPositions;
@@ -22,15 +22,21 @@ public class GameBoard : MonoBehaviour {
 	public void SnapePiecesFromTransforms() {
 		GamePiece[] pArr = GetComponentsInChildren<GamePiece>();
 		for (int i = 0; i < pArr.Length; i++) {
+
+			Vector3 offset = Vector3.zero;
+			SpriteRenderer spriteRenderer = pArr[i].gameObject.GetComponent<SpriteRenderer>();
+			Vector3 bounds = spriteRenderer.bounds.size;
+			offset.x = (bounds.x - 1.0f) * 0.5f;
+			offset.y = (bounds.y - 1.0f) * 0.5f;
+
+
 			pArr[i].transform.localPosition = new Vector3(
-				Mathf.Round(pArr[i].transform.localPosition.x),
-				Mathf.Round(pArr[i].transform.localPosition.y),
+				Mathf.Round(pArr[i].transform.localPosition.x) + offset.x,
+				Mathf.Round(pArr[i].transform.localPosition.y) + offset.y,
 				0.0f);
 			pArr[i].d.x = Mathf.FloorToInt(pArr[i].transform.localPosition.x);
 			pArr[i].d.y = Mathf.FloorToInt(pArr[i].transform.localPosition.y);
 			pArr[i].m_isFixed = true;
-
-			Debug.Log (pArr[i].d.x + ":" + pArr[i].d.y);
 		}
 	}
 
@@ -401,11 +407,6 @@ public class GameBoard : MonoBehaviour {
 		GamePiece p = m_sel;
 		m_sel = null;
 
-		if ( p.GetType() == typeof(GP_Handle) )
-		{
-			m_handlesOnBoard.Remove( p as GP_Handle );
-		}
-
 		p.m_selected = 0;
 		p.transform.parent = null;
 		p.name = "Piece_Float";
@@ -446,11 +447,6 @@ public class GameBoard : MonoBehaviour {
 			}
 		}
 		m_board[x + y * m_width] = p;
-
-		if ( p.GetType() == typeof(GP_Handle) )
-		{
-			m_handlesOnBoard.Add( p as GP_Handle );
-		}
 
 		return true;
 	}
@@ -545,10 +541,15 @@ public class GameBoard : MonoBehaviour {
 		// Flood fill to find anything that touches the handle so it isn't destroyed
 		bool[] floodFill = new bool[ m_width * m_height ];
 		List< Vector2 > positions = new List<Vector2>();
-		foreach ( GP_Handle handle in m_handlesOnBoard )
+
+		// Find all handles
+		foreach ( GamePiece p in m_board )
 		{
-			floodFill[ handle.d.x + handle.d.y * m_width ] = true;
-			positions.Add( new Vector2( handle.d.x, handle.d.y ) );
+			if ( p != null && p.GetType() == typeof(GP_Handle) )
+			{
+				floodFill[ p.d.x + p.d.y * m_width ] = true;
+				positions.Add( new Vector2( p.d.x, p.d.y ) );
+			}
 		}
 
 		while ( positions.Count > 0 )
