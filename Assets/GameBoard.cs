@@ -79,7 +79,6 @@ public class GameBoard : MonoBehaviour {
 
 	public void EventBallSpawn(Ball b) {
 		m_ballsOnBoard.Add (b);
-		Debug.Log ("Ball Added");
 	}
 
 	static Vector3[] DIR;	// BECAUSE I HATE MYSELF DAMNIT - Claire
@@ -97,7 +96,6 @@ public class GameBoard : MonoBehaviour {
 			Ball b = m_ballsOnBoard[i];
 			if(DoBall(b) == false) {
 				Destroy(b.gameObject);
-				Debug.Log("Destroy Ball");
 				destroyBall.Push(i);
 			}
 		}
@@ -106,33 +104,86 @@ public class GameBoard : MonoBehaviour {
 			m_ballsOnBoard.RemoveAt (destroyBall.Pop ());
 	}
 
+	bool IsBallOnPipe (Vector3 bp, int bx, int by, out GamePiece p)
+	{
+		p = null;
+		if (OnBoard (bx, by) == false)
+			return false;
+		if (m_board [bx + by * m_width] == null)
+			return false;
+		p = m_board [bx + by * m_width];
+		if ((bp.y > 0.0f) && (p.m_pipe [0] == 0))
+			return false;
+		if ((bp.x > 0.0f) && (p.m_pipe [1] == 0))
+			return false;
+		if ((bp.y < 0.0f) && (p.m_pipe [2] == 0))
+			return false;
+		if ((bp.x < 0.0f) && (p.m_pipe [3] == 0))
+			return false;
+		return true;
+	}
+
 	public bool DoBall(Ball b) {
 		Vector3 bp = transform.InverseTransformPoint(b.transform.position);
 		int bx = Mathf.FloorToInt(bp.x+0.5f);
 		int by = Mathf.FloorToInt(bp.y+0.5f);
 
-		if (OnBoard (bx, by) == false)
-			return false;
-		
-		if (m_board [bx + by * m_width] == null)
-			return false;
-		
-		GamePiece p = m_board[bx+by*m_width];
-		p.AffectBall(b);
-		
 		bp.x = bp.x - (bx*1.0f);
 		bp.y = bp.y - (by*1.0f);
-		
-		if((bp.y > 0.0f) && (p.m_pipe [0] == 0))
+
+		GamePiece p;
+		if (IsBallOnPipe (bp, bx, by, out p) == false)
 			return false;
-		if((bp.x > 0.0f) && (p.m_pipe [1] == 0))
-			return false;
-		if((bp.y < 0.0f) && (p.m_pipe [2] == 0))
-			return false;
-		if((bp.x < 0.0f) && (p.m_pipe [3] == 0))
-			return false;
-			
-		b.transform.position += DIR[b.m_travelDir];
+
+		p.AffectBall(b);
+
+		// Check if we are moving into Unknown Area
+		bp += DIR[b.m_travelDir];
+
+		while (bp.y > 0.5f) {// Check North 
+			by += 1; 
+			bp.y -= 1.0f;
+		}
+		while (bp.x > 0.5f) {// Check East
+			bx += 1;
+			bp.x -= 1.0f;
+		}
+		if (bp.y < -0.5f) {// Check South 
+			by -= 1;
+			bp.y += 1.0f;
+		}
+		if (bp.x < -0.5f) {// Check West 
+			bx -= 1;
+			bp.x += 1.0f;
+		}
+
+		GamePiece np;
+		if (IsBallOnPipe (bp, bx, by, out np)) { // Continue On
+			b.transform.position += DIR [b.m_travelDir];
+		}
+		else {
+			if (p != np)
+			{
+				if(np != null)
+				{
+					Destroy(np.gameObject);
+					m_board[bx + by*m_width]=null;
+				}
+				return false; // BOOM
+			}
+
+			int left = (b.m_travelDir + 3) % 4;
+			int right = (b.m_travelDir + 5) % 4;
+			if (p.m_pipe [left] != 0) {
+				b.m_travelDir = left;
+				b.transform.position = np.transform.position + DIR [b.m_travelDir] * bp.magnitude;
+			} else if (p.m_pipe [right] != 0) {
+				b.m_travelDir = right;
+				b.transform.position = np.transform.position + DIR [b.m_travelDir] * bp.magnitude;
+			} else {
+				return false;
+			}
+		}
 		return true;
 	}
 
