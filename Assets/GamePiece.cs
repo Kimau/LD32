@@ -16,13 +16,7 @@ public class GPData : System.Object {
 public class GamePiece : MonoBehaviour {
 
 	public GPData d; 
-
-	public int x,y,r;
 	
-	public int[] m_pipe = {0,0,0,0};
-	public int[] m_wire = {0,0,0,0, // north, east, south, west
-		0,0,0,0}; // corners: north-east, south-east, south-west, north-west
-
 	public int currentRot;
 	public int m_selected;
 	Animator m_anim;
@@ -82,6 +76,9 @@ public class GamePiece : MonoBehaviour {
 
 	void OnDrawGizmos() {
 		Gizmos.color = Color.blue;
+
+		if (d == null)
+			d = new GPData ();
 
 		if(d.m_pipe[0]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.0f,0.25f,0.0f), new Vector3(0.1f, 0.4f, 0.1f));
 		if(d.m_pipe[1]!=0) Gizmos.DrawCube (transform.position + new Vector3(0.25f,0.0f,0.0f), new Vector3(0.4f, 0.1f, 0.1f));
