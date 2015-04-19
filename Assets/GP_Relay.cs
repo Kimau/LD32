@@ -12,7 +12,7 @@ public class GP_Relay : GamePiece {
 		if ( gameBoard != null )
 		{
 			int transformedElectronPosition = ( currentRot / 90 + m_RelayControlElectronPosition ) % 4;
-			GamePieceData electron = gameBoard.GetElectron( x, y );
+			GamePieceData electron = gameBoard.GetElectron( d.x, d.y );
 
 			if ( electron[ transformedElectronPosition ] == 0 )
 			{
