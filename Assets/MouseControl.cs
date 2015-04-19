@@ -55,6 +55,8 @@ public class MouseControl : MonoBehaviour {
 				m_startDrag = wp;
 			}
 			else if(m_spawner.m_box.OverlapPoint(wp)) {
+				m_board.Select(-1,-1);
+
 				m_startDrag = wp;
 				m_dragPiece = m_spawner.m_currPiece;
 				m_dragPiece.transform.parent = null;
@@ -71,6 +73,16 @@ public class MouseControl : MonoBehaviour {
 			}
 		}
 
+		if (Input.GetMouseButtonUp (1)) {
+			if(m_dragPiece) {
+				m_dragPiece.Rotate(-90);
+			}
+			else {
+				if(onBoard)
+					m_board.Select(x,y);
+				m_board.RotateSelectedPiece(-90);
+			}
+		}
 
 		// Keyboard Controls
 		if (Input.GetKeyDown (KeyCode.RightArrow)) {

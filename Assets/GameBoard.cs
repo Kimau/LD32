@@ -14,6 +14,10 @@ public class GameBoard : MonoBehaviour {
 	GamePieceData[] m_electronPositions;
 	float m_timeSinceTick = 0.0f;
 
+	public bool IsPieceSelected() {
+		return (m_sel != null);
+	}
+
 	// Use this for initialization
 	void Start () {
 		m_board = new GamePiece[m_width*m_height];
