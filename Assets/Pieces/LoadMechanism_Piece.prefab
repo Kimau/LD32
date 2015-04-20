@@ -43,7 +43,7 @@ GameObject:
   - 212: {fileID: 21229178}
   m_Layer: 0
   m_Name: WireStraight
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59,7 +59,7 @@ GameObject:
   - 212: {fileID: 21296878}
   m_Layer: 0
   m_Name: WireStraight 1
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -358,7 +358,6 @@ MonoBehaviour:
   m_FriendlyDesc: 'When it gets a spark, it will load the Bullet Chamber ''wirelessly''
     via cogs. '
   m_isFixed: 0
-  currentRot: 0
   m_selected: 0
 --- !u!212 &21202740
 SpriteRenderer:

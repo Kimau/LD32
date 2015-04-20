@@ -43,7 +43,7 @@ GameObject:
   - 212: {fileID: 21293654}
   m_Layer: 0
   m_Name: WireEdge
-  m_TagString: Untagged
+  m_TagString: Wire
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -116,7 +116,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 143552}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -.707106829, w: .707106709}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -208,11 +208,10 @@ MonoBehaviour:
     y: 0
     r: 0
     m_pipe: 00000000000000000000000000000000
-    m_wire: 0000000000000000000000000100000000000000000000000000000000000000
+    m_wire: 0100000000000000000000000100000000000000000000000000000000000000
   m_FriendlyName: Trigger
   m_FriendlyDesc: When pressed, sends a spark
   m_isFixed: 0
-  currentRot: 0
   m_selected: 0
 --- !u!212 &21249514
 SpriteRenderer:
@@ -368,7 +367,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1981334457
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a9071ebfa9363f343acf149455dfd02a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bcb682bcfc274284ea0146981daaa1dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:

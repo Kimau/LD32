@@ -11,7 +11,7 @@ GameObject:
   - 212: {fileID: 21200034}
   m_Layer: 0
   m_Name: WireCorner 1
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,7 @@ GameObject:
   - 212: {fileID: 21294800}
   m_Layer: 0
   m_Name: WireCorner
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -212,7 +212,6 @@ MonoBehaviour:
   m_FriendlyName: Wires
   m_FriendlyDesc: Use these to move sparks.
   m_isFixed: 0
-  currentRot: 0
   m_selected: 0
 --- !u!212 &21200034
 SpriteRenderer:

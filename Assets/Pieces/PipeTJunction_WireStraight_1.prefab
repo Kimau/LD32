@@ -27,7 +27,7 @@ GameObject:
   - 212: {fileID: 21293568}
   m_Layer: 0
   m_Name: WireStraight
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,7 +91,7 @@ GameObject:
   - 212: {fileID: 21223980}
   m_Layer: 0
   m_Name: WireStraight 1
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -241,7 +241,6 @@ MonoBehaviour:
   m_FriendlyName: Pipe and wires
   m_FriendlyDesc: Use these to move sparks and bullets.
   m_isFixed: 0
-  currentRot: 0
   m_selected: 0
 --- !u!212 &21213402
 SpriteRenderer:

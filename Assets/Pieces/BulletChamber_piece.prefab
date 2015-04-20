@@ -11,7 +11,7 @@ GameObject:
   - 212: {fileID: 21279658}
   m_Layer: 0
   m_Name: WireStraight 2
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,7 +43,7 @@ GameObject:
   - 212: {fileID: 21214696}
   m_Layer: 0
   m_Name: WireStraight 1
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -241,7 +241,6 @@ MonoBehaviour:
   m_FriendlyName: Bullet Chamber
   m_FriendlyDesc: When it gets a spark, it will fire a bullet. Must be loaded first.
   m_isFixed: 0
-  currentRot: 0
   m_selected: 0
   m_shootDir: 1
   m_ballPrefab: {fileID: 11467410, guid: 3d6a22880c0b4a44baad1ca264202653, type: 2}

@@ -3,12 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameBoard : MonoBehaviour {
+	struct ElectricityAnimationData
+	{
+		public float intensity;
+		public float dir;
+	};
 
 	public int m_width;
 	public int m_height;
 	public List<Ball> m_ballsOnBoard;
 
 	GamePiece[] m_board;
+	ElectricityAnimationData[]		m_electricityAnimations;
 	GamePiece m_sel;
 	GamePieceData[] m_electronPositions;
 	float m_timeSinceTick = 0.0f;
@@ -23,6 +29,8 @@ public class GameBoard : MonoBehaviour {
 		GamePiece[] pArr = GetComponentsInChildren<GamePiece>();
 		for (int i = 0; i < pArr.Length; i++) {
 
+			pArr[i].m_isFixed = true;
+
 			Vector3 offset = Vector3.zero;
 			SpriteRenderer spriteRenderer = pArr[i].gameObject.GetComponent<SpriteRenderer>();
 			Vector3 bounds = spriteRenderer.bounds.size;
@@ -36,25 +44,25 @@ public class GameBoard : MonoBehaviour {
 			pArr[i].d.x = Mathf.FloorToInt(pArr[i].transform.localPosition.x);
 			pArr[i].d.y = Mathf.FloorToInt(pArr[i].transform.localPosition.y);
 
-			/*
 			float r = pArr[i].transform.localRotation.eulerAngles.z;
 			while(r > 360.0f)
 				r -= 360.0f;
 			while(r < 0.0f)
 				r += 360.0f;
-			pArr[i].d.r = Mathf.FloorToInt((360.0f - r) / 90.0f)*90;
-			pArr[i].m_isFixed = true;
+			r = 360.0f - r;
+			pArr[i].d.r = (Mathf.FloorToInt(r / 90.0f)*90) % 360;
+			pArr[i].GetComponent<Animator>().Play(pArr[i].d.r + " deg");
 
-			Debug.Log (pArr[i].transform.localRotation.eulerAngles.z + ">" + r + ">" + pArr[i].d.r);
-
-			pArr[i].transform.localRotation = Quaternion.Euler(0,0,-pArr[i].d.r);
-			*/
+			pArr[i].transform.localRotation = Quaternion.Euler(new Vector3(0,0,360.0f - pArr[i].d.r));
 		}
+
+		Debug.Log ("Snapped");
 	}
 
 	// Use this for initialization
 	void Start () {	
 		m_board = new GamePiece[m_width*m_height];
+		m_electricityAnimations = new ElectricityAnimationData[ m_width * m_height ];
 		m_electronPositions = new GamePieceData[ m_width * m_height ];
 		for ( int i = 0; i < (m_width*m_height); ++i )
 		{
@@ -91,7 +99,7 @@ public class GameBoard : MonoBehaviour {
 			TickBalls ();
 		}
 
-
+		updateElectricityAnimation();
 
 	}
 
@@ -205,6 +213,68 @@ public class GameBoard : MonoBehaviour {
 		return true;
 	}
 
+	void updateElectricityAnimation()
+	{
+		int size = m_width * m_height;
+		for ( int i = 0; i < size; ++i )
+		{
+			if ( m_board[i] != null )
+			{
+
+				bool result = false;
+				for ( int j = 0; j < 5; ++j )
+				{
+					if ( m_electronPositions[i][j] != 0 )
+					{
+						result = true;
+						break;
+					}
+				}
+
+				if ( result == false )
+				{
+					m_electricityAnimations[i].dir = -1.0f;
+				}
+
+				{
+					if ( m_electricityAnimations[i].dir == 0.0f )
+						m_electricityAnimations[i].dir = 1.0f;
+
+					m_electricityAnimations[i].intensity += Time.deltaTime * m_electricityAnimations[i].dir;
+
+					if ( m_electricityAnimations[i].intensity > 1.0f )
+					{
+						m_electricityAnimations[i].dir = -1.0f;
+						m_electricityAnimations[i].intensity = 1.0f;
+					}
+
+					else if ( m_electricityAnimations[i].intensity < 0.0f )
+					{
+						if ( result == true )
+							m_electricityAnimations[i].dir = 1.0f;
+
+						else
+							m_electricityAnimations[i].dir = 0.0f;
+
+						m_electricityAnimations[i].intensity = 0.0f;
+					}
+
+
+				}
+
+				SpriteRenderer[] sprites = m_board[i].GetComponentsInChildren<SpriteRenderer>();
+				foreach ( SpriteRenderer sprite in sprites )
+				{
+					Debug.Log( sprite.name );
+					if ( sprite.tag == "Wire" )
+					{
+						sprite.material.color = Color.Lerp( Color.black, Color.white, m_electricityAnimations[i].intensity );
+					}
+				}
+			}
+		}
+	}
+	
 	void outputToDirection( Vector2 piecePos, int dir )
 	{
 		Vector2[] kDirections =
@@ -444,6 +514,7 @@ public class GameBoard : MonoBehaviour {
 			}
 		}
 
+		p.RotateMoooshData();
 		p.transform.parent = transform;
 		p.transform.localPosition = new Vector3(x + offset.x, y + offset.y, 0);
 		p.d.x = x;

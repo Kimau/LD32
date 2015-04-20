@@ -61,7 +61,7 @@ GameObject:
   - 114: {fileID: 11433882}
   m_Layer: 0
   m_Name: Diode_piece
-  m_TagString: Untagged
+  m_TagString: Wires
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,7 +154,6 @@ MonoBehaviour:
   m_FriendlyName: Diode
   m_FriendlyDesc: 'Will only let sparks in through one direction, and not the other. '
   m_isFixed: 0
-  currentRot: 0
   m_selected: 0
   m_allowedElectronEntry: 2
 --- !u!212 &21207356
