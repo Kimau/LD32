@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class MouseControl : MonoBehaviour {
-
+	Camera m_boardCam;
 	GameBoard m_board;
 	GamePiece m_dragPiece;
 	Vector3 m_draggPieceoffset = Vector3.zero;
@@ -14,6 +14,7 @@ public class MouseControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		m_boardCam = Camera.main;
 		m_board = FindObjectOfType<GameBoard> ();
 		m_bin = FindObjectOfType<DropBin> ();
 		m_spawners = FindObjectsOfType<SpawnerBase> ();
@@ -40,7 +41,7 @@ public class MouseControl : MonoBehaviour {
 	void Update () {
 
 		// Mouse Position
-		Vector3 wp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector3 wp = m_boardCam.ScreenToWorldPoint(Input.mousePosition);
 		wp.z = -1.0f;
 		Vector3 bp = m_board.transform.InverseTransformPoint(wp) + new Vector3(0.5f,0.5f,0.0f);
 		
@@ -89,7 +90,7 @@ public class MouseControl : MonoBehaviour {
 			{
 				foreach ( SpawnerBase spanwer in m_spawners ) 
 				{
-					if ( spanwer.m_box.OverlapPoint(wp) ) 
+					if ( spanwer.IsOverlap() ) 
 					{
 						m_board.Select(-1,-1);
 
@@ -131,53 +132,54 @@ public class MouseControl : MonoBehaviour {
 		}
 
 		// Keyboard Controls
-		if (Input.GetKeyDown (KeyCode.RightArrow)) {
-			if (m_dragPiece)
-				m_dragPiece.Rotate (90);
-			else 
-				m_board.RotateSelectedPiece (90);
-		
-		}
-
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			m_board.BroadcastMessage( "OnTriggerEvent" );
-		}
-
-		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
-			if (m_dragPiece)
-				m_dragPiece.Rotate (-90);
-			else 
-				m_board.RotateSelectedPiece (-90);
-		}
-
-		if (Input.GetKeyUp (KeyCode.Q)) {
-			m_board.transform.localScale *= 0.5f;
-		}
-		if (Input.GetKeyUp (KeyCode.E)) {
-			m_board.transform.localScale *= 2.0f;
-		}
-		if (Input.GetKeyUp (KeyCode.W)) {
-			m_board.transform.position += new Vector3(0.0f, -m_board.transform.localScale.z, 0.0f);
-		}
-		if (Input.GetKeyDown (KeyCode.S)) {
-			m_board.transform.position += new Vector3(0.0f, +m_board.transform.localScale.z, 0.0f);
-		}
-		if (Input.GetKeyUp (KeyCode.A)) {
-			m_board.transform.position += new Vector3(-m_board.transform.localScale.z, 0.0f, 0.0f);
-		}
-		if (Input.GetKeyDown (KeyCode.D)) {
-			m_board.transform.position += new Vector3(+m_board.transform.localScale.z, 0.0f,0.0f);
-		}
+		UpdateKeyboardControls ();
 
 		// Tooltip
 		SetTooltip (m_dragPiece);
+	}
+
+	void UpdateKeyboardControls ()
+	{
+		if (Input.GetKeyDown (KeyCode.RightArrow)) {
+			if (m_dragPiece)
+				m_dragPiece.Rotate (90);
+			else
+				m_board.RotateSelectedPiece (90);
+		}
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			m_board.BroadcastMessage ("OnTriggerEvent");
+		}
+		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+			if (m_dragPiece)
+				m_dragPiece.Rotate (-90);
+			else
+				m_board.RotateSelectedPiece (-90);
+		}
+		if (Input.GetKeyUp (KeyCode.Q)) {
+			m_boardCam.orthographicSize += 1;
+		}
+		if (Input.GetKeyUp (KeyCode.E)) {
+			m_boardCam.orthographicSize -= 1;
+		}
+		if (Input.GetKeyUp (KeyCode.W)) {
+			m_boardCam.transform.position += new Vector3 (0.0f, +m_board.transform.localScale.z, 0.0f);
+		}
+		if (Input.GetKeyDown (KeyCode.S)) {
+			m_boardCam.transform.position += new Vector3 (0.0f, -m_board.transform.localScale.z, 0.0f);
+		}
+		if (Input.GetKeyUp (KeyCode.A)) {
+			m_boardCam.transform.position += new Vector3 (-m_board.transform.localScale.z, 0.0f, 0.0f);
+		}
+		if (Input.GetKeyDown (KeyCode.D)) {
+			m_boardCam.transform.position += new Vector3(+m_board.transform.localScale.z, 0.0f,0.0f);
+		}
 	}
 
 	void DropDragPiece (int x,int y, Vector3 wp)
 	{
 		if (m_board.Place (m_dragPiece, x, y))
 			m_dragPiece = null;
-		if (m_bin.m_box.OverlapPoint (wp)) {
+		if (m_bin.IsOverlap ()) {
 			Destroy (m_dragPiece.gameObject);
 			m_dragPiece = null;
 		}

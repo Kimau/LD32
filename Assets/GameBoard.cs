@@ -29,14 +29,26 @@ public class GameBoard : MonoBehaviour {
 			offset.x = (bounds.x - 1.0f) * 0.5f;
 			offset.y = (bounds.y - 1.0f) * 0.5f;
 
-
 			pArr[i].transform.localPosition = new Vector3(
 				Mathf.Round(pArr[i].transform.localPosition.x) + offset.x,
 				Mathf.Round(pArr[i].transform.localPosition.y) + offset.y,
 				0.0f);
 			pArr[i].d.x = Mathf.FloorToInt(pArr[i].transform.localPosition.x);
 			pArr[i].d.y = Mathf.FloorToInt(pArr[i].transform.localPosition.y);
+
+			/*
+			float r = pArr[i].transform.localRotation.eulerAngles.z;
+			while(r > 360.0f)
+				r -= 360.0f;
+			while(r < 0.0f)
+				r += 360.0f;
+			pArr[i].d.r = Mathf.FloorToInt((360.0f - r) / 90.0f)*90;
 			pArr[i].m_isFixed = true;
+
+			Debug.Log (pArr[i].transform.localRotation.eulerAngles.z + ">" + r + ">" + pArr[i].d.r);
+
+			pArr[i].transform.localRotation = Quaternion.Euler(0,0,-pArr[i].d.r);
+			*/
 		}
 	}
 

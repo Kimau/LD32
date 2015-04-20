@@ -10,11 +10,15 @@ public class PieceDrawer : PropertyDrawer {
 		position.height = 100;
 		Color s = GUI.backgroundColor;
 		InspectPipeData (position, prop);
+		GUI.backgroundColor = Color.grey;
+		position.y += 100;
+		position.height = EditorGUIUtility.singleLineHeight;
+		prop.FindPropertyRelative ("r").intValue = EditorGUI.IntSlider (position, "Rotation", prop.FindPropertyRelative ("r").intValue / 90, 0, 3) * 90;
 		GUI.backgroundColor = s;
 	}
 
 	public override float GetPropertyHeight(SerializedProperty prop, GUIContent label) {
-		return 100.0f;
+		return 100.0f + EditorGUIUtility.singleLineHeight;
 	}
 
 	public void InspectPipeData(Rect r, SerializedProperty prop) {

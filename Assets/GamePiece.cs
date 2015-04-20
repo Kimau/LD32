@@ -19,7 +19,6 @@ public class GamePiece : MonoBehaviour {
 	public string m_FriendlyName = "Balls";
 	public string m_FriendlyDesc = "Game ticks this object until it...";
 	public bool m_isFixed = false;
-	public int currentRot;
 	public int m_selected;
 	Animator m_anim;
 
@@ -32,7 +31,6 @@ public class GamePiece : MonoBehaviour {
 	void Update () {
 		m_anim.SetBool ("selected", m_selected==1);
 		m_anim.SetInteger ("rot", d.r);
-		m_anim.SetInteger ("presentrot", currentRot);
 	}
 
 	public void OnDestroy()
@@ -80,7 +78,6 @@ public class GamePiece : MonoBehaviour {
 		d.m_pipe = nPipe;
 		d.m_wire = nWire;
 
-		currentRot += rot;
 		d.r = (d.r + rot + 360) % 360;
 	}
 

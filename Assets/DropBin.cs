@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DropBin : MonoBehaviour {
 
-	public BoxCollider2D m_box;
+	BoxCollider2D m_box;
 
 	// Use this for initialization
 	void Start () {
@@ -13,5 +13,11 @@ public class DropBin : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public bool IsOverlap() {
+		Vector3 wp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+		return m_box.OverlapPoint (wp);
 	}
 }

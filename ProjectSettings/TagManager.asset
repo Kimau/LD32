@@ -13,7 +13,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - RT
   - 
   - 
   - 
@@ -38,11 +38,11 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
-    locked: 0
   - name: Table
     uniqueID: 2267832581
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
   - name: Surround
     uniqueID: 733071637

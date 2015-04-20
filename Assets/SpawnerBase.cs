@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class SpawnerBase : MonoBehaviour {
 
 	public GamePiece m_currPiece;
-	public BoxCollider2D m_box;
+	BoxCollider2D m_box;
 
 	// Use this for initialization
 	public virtual void Start () {
@@ -11,5 +11,12 @@ public abstract class SpawnerBase : MonoBehaviour {
 	}
 
 	protected abstract void SpawnPiece ();
+
+	
+	public bool IsOverlap() {
+		Vector3 wp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		
+		return m_box.OverlapPoint (wp);
+	}
 }
 
